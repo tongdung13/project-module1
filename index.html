@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="styleheet" href="index.css">
+    <style>
+      
+        .item-image {
+            background-position: center; 
+            width: 197px; 
+            height: 150px;
+            font-size: 50px;
+            color: black;
+        }
+
+        .image-item {
+            background-size: cover;
+            width: 465px;
+            height: 250px;
+
+        }
+
+        .span {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+ <span ><h1>GAME BẦU CUA</h1></span>
+<div>
+   <span id="1"><img src="images/bau.PNG"></span> 
+   <span id="2"><img src="images/ca.PNG"></span> 
+   <span id="3"><img src="images/cua.PNG"></span><br><br>
+   <br> <button onclick="jolt()">Disc Shock</button>
+    <button onclick="resetgame()">Reset Game</button>
+   
+</div>
+
+<span id="player-totalPoint"></span>
+    <table>
+        <tr>
+            <td>
+                <button  data-name="bau" id="a" class="item-image"  style="background-image: url('images/bau.PNG');"
+                 onclick="changeValue(this)"></button>
+
+            </td>
+            <td>
+                <button  data-name="cua" id="b" class="item-image" style="background-image: url('images/cua.PNG');" 
+                onclick="changeValue(this)"></button>
+
+            </td>
+
+            <td>
+                <button  data-name="ca" id="c" class="item-image" style="background-image: url('images/ca.PNG');"
+                 onclick="changeValue(this)"></button>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button data-name="tom" id="d" class="item-image" style="background-image: url('images/tom.PNG');" 
+                onclick="changeValue(this)"></button>
+
+            </td>
+
+            <td>
+                <button data-name="nai" id="e" class="item-image" style="background-image: url('images/nai.PNG');" 
+                onclick="changeValue(this)"></button>
+            </td>
+
+            <td>
+                <button id="f" data-name="ga" class="item-image" style="background-image: url('images/ga.PNG');" 
+                onclick="changeValue(this)"></button>
+            </td>
+
+        </tr>
+    </table>
+
+    <audio controls autoplay loop>
+        <source src="music/ret/MotMinhCoBuonKhong1.mp3" type="audio/mpeg"> 
+        <source src="music/ret/MotMinhCoBuonKhong1.mp3" type="audio/ogg">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         "
+    </audio>
+    <script src="canvas.js"></script>
+    <script src="money.js"></script>
+    <script src="dice.js"></script>
+    <script src="dasa.js"></script>
+</body>
+</html>
+<script>
+      let player = new Player(loadData());  
+      let master = new RoomMaster("dung",1000000);
+      let itemsSelected = [];
+
+    function changeValue(item){
+        item.innerHTML = +item.innerHTML + 10000;
+        master.plus(player);
+
+        let nameItem = item.getAttribute('data-name');
+        let i = findItemSelected(itemsSelected, nameItem);
+        if (i !== -1) {
+            itemsSelected[i].money = item.innerHTML;
+        } else {
+            let itemSelected = {
+                name: nameItem,
+                money: item.innerHTML
+            }
+
+            itemsSelected.push(itemSelected);
+        }
+
+    document.getElementById("player-totalPoint").innerHTML = "<br>Play Monney Jonk: " + player.totalPoint + "<br>";
+    
+    }
+
+    function findItemSelected(itemsSelected, nameItem) {
+        for (let i = 0; i < itemsSelected.length; i++) {
+            if (nameItem === itemsSelected[i].name) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    document.getElementById("player-totalPoint").innerHTML = "<br>Play Monney Jonk: " + player.totalPoint + "<br>";
+
+    
+        function resetgame(){
+            document.getElementById("a").innerHTML ='';
+            document.getElementById("b").innerHTML = '';
+            document.getElementById("c").innerHTML = '';
+            document.getElementById("d").innerHTML = '';
+            document.getElementById("e").innerHTML = '';
+            document.getElementById("f").innerHTML = '';
+            location.reload();
+        }
+
+    function jolt() {
+    let dice = new Dice(); 
+    let results = dice.getResult();
+
+    document.getElementById("1").innerHTML = "<img src='images/"+results[0]+ ".PNG'>";
+    document.getElementById("2").innerHTML = "<img src='images/"+results[1]+ ".PNG'>";
+    document.getElementById("3").innerHTML = "<img src='images/"+results[2]+ ".PNG'>";
+
+    for (let i = 0; i < itemsSelected.length; i++) {
+        if (itemsSelected[i].name == results[0]){
+            player.totalPoint += itemsSelected[i].money * 2;
+        } 
+        if (itemsSelected[i].name == results[1]) {
+            player.totalPoint += itemsSelected[i].money * 2;
+        }
+        if (itemsSelected[i].name == results[2]) {
+            player.totalPoint += itemsSelected[i].money * 2;
+        }
+        if (itemsSelected[i].name !== results.length) {
+            player.totalPoint -= itemsSelected[i].money;
+        }
+        
+    }
+      
+    saveData(player.totalPoint);
+    if (loadData() <= 0){
+        window.location.href = "endgame.html";
+
+      }
+    document.getElementById("player-totalPoint").innerHTML = "<br>Play Monney Jonk: " + player.totalPoint + "<br>";
+
+}
+
+</script>
